@@ -1,0 +1,11 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block fos_user_content %}
+    <p class="alert alert-success wow fadeInRight" data-wow-delay="0.2s">
+        {{ 'resetting.check_email'|trans({'%email%': email}, 'FOSUserBundle') }}
+    </p>
+
+    <a class="back-to wow fadeInRight" data-wow-delay="0.5s" href="{{ path('fos_user_security_login') }}">
+        <i class="fa fa-arrow-left icon left" aria-hidden="true"></i>{{ 'registration.back'|trans({}, 'FOSUserBundle') }}
+    </a>
+{% endblock fos_user_content %}

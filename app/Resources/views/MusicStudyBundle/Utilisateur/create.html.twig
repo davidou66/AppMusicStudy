@@ -1,0 +1,177 @@
+{% extends 'MusicStudyBundle/base.html.twig' %}
+
+{% block body %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                {% if user.id is not null %}Profil Utilisateur{% else %}Créer un utilisateur{% endif %}
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="{{ path('dashboard') }}"><i class="fa fa-dashboard"></i> Accueil</a></li>
+                <li><a href="{{ path('list_user') }}">Utilisateurs </a></li>
+                <li class="active">{% if user.id is not null %}{{ user }}{% else %}Création{% endif %}</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-3">
+                    <!-- Profile Image -->
+                    <div class="box box-primary">
+                        <div class="box-body box-profile">
+                            <img class="profile-user-img img-responsive img-circle" src="{% if user.avatar is not null %}{{ vich_uploader_asset(user.avatar, 'file', 'MusicStudyBundle\\Entity\\Document') }}{% endif %}" alt="User profile picture">
+
+                            <h3 class="profile-username text-center">{% if user.id is not null %}{{ user.prenom }} {{ user.nom }}{% else %}Nouvel Utilisateur{% endif %}</h3>
+
+                            <ul class="list-group list-group-unbordered">
+                                <li class="list-group-item">
+                                    <b>Followers</b> <a class="pull-right">1,322</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Following</b> <a class="pull-right">543</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Friends</b> <a class="pull-right">13,287</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-9">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#settings" data-toggle="tab">Paramètres</a></li>
+                            {% if user.id is not null %}
+                                <li><a href="#tasks" data-toggle="tab">Tâches</a></li>
+                                <li><a href="#stats" data-toggle="tab">Statistiques</a></li>
+                            {% endif %}
+                        </ul>
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="settings">
+                                {{ form_start(form) }}
+                                {%  if form_errors(form) %}
+                                    <div class="error alert alert-warning">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        {{ form_errors(form) }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.username) }}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            {{ form_widget(form.username) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.nom) }}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            {{ form_widget(form.nom) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.prenom) }}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            {{ form_widget(form.prenom) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.eMail) }}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            {{ form_widget(form.eMail) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.NumTelPort) }}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            {{ form_widget(form.NumTelPort) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.commentaire) }}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            {{ form_widget(form.commentaire) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.plainPassword) }}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            {{ form_widget(form.plainPassword) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.avatar) }}
+                                        </div>
+                                        <div class="col-xs-2">
+                                            {{ form_widget(form.avatar) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.sexe) }}
+                                        </div>
+                                        <div class="col-xs-2">
+                                            {{ form_widget(form.sexe) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-2 control-label">
+                                            {{ form_label(form.color) }}
+                                        </div>
+                                        <div class="col-xs-2">
+                                            {{ form_widget(form.color) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            {{ form_widget(form.save, { 'attr': {'class': 'btn btn-danger'} }) }}
+                                        </div>
+                                    </div>
+                                    {{ form_widget(form._token) }}
+                                    {{ form_end(form, {'render_rest': false }) }}
+                                </div>
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="stats">
+
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="tasks">
+                                {% if form_task is not null %}
+                                    {% include 'MusicStudyBundle/Component/tasks.html.twig' with {'form_task': form_task} %}
+                                {% endif %}
+                            </div>
+                            <!-- /.tab-pane -->
+                        </div>
+                    </div>
+                    <!-- /.nav-tabs-custom -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
+        <!-- /.content -->
+
+    </div>
+{% endblock %}

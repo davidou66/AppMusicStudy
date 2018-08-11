@@ -1,0 +1,12 @@
+<!-- chat item -->
+<div class="item" id="{{ message.id }}">
+    <img src="{% if message.sender.avatar %}{{ vich_uploader_asset(message.sender.avatar, 'file', 'MusicStudyBundle\\Entity\\Document') }}{% endif %}" alt="user image" class="online" >
+
+    <p class="message">
+        <a href="#" class="name">
+            <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> {{ message.createdAt|date('d/m/Y h:m') }}</small>
+            {{ message.sender }}
+        </a>
+        {{ message.content }}
+    </p>
+</div>

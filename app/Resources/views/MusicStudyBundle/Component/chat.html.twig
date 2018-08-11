@@ -1,0 +1,221 @@
+<script>
+
+    $(document).ready(function(){
+        getConversation();
+        getLastMessages();
+        $( "#private-message" ).on( "keydown", function(event) {
+            if(event.which == 13){
+                sendMessage();
+                $('#private-message').val('');//Vide l'input
+            }
+        });
+
+        setInterval(autoRefreshConversation, 10000);
+
+    });
+
+    //Méthode récupère lastMessage pour chaque contact
+    function getLastMessages(){
+        $('#list-last-messages li').each(function( index, element ) {
+            var sender = $(element).find('#sender-'.concat(index+1)).text();//sender id
+            var receiver = "{{ app.user.id }}";
+            //appel ajax pour recevoir le dernier message de chaque users
+            var json = {
+                idSender: sender,
+                idReceiver: receiver
+            };
+
+            $.ajax({
+                method: "POST",
+                url: '{{ path("get_last_message") }}',
+                data: json,
+                error: function (e) {
+                    console.log(e.responseText);
+                },success: function (result) {
+                    if(result['date']!=null && result['content']!=null){
+                        $(element).find('#date-mess-'.concat(index+1)).text(result['date']);//Set the date
+                        $(element).find('#content-mess-'.concat(index+1)).text(result['content']);//Set the content
+                    }
+                },
+                complete: function () {
+                    $('#loading-private-chat-contacts').hide();
+                }
+            });
+        })
+    }
+
+    function autoRefreshConversation(){
+        var sender = $('#receiver-id').text();//sender id
+        var receiver = "{{ app.user.id }}";
+        var lastMessageId = $('#messages-container').children().last().attr('id');
+        console.log(lastMessageId);
+        //appel ajax pour recevoir le dernier message de chaque users
+        var json = {
+            idSender: sender,
+            idReceiver: receiver,
+            conv: true,
+            idLastMessage: lastMessageId
+        };
+
+        $.ajax({
+            method: "POST",
+            url: '{{ path("get_last_message") }}',
+            data: json,
+            error: function (e) {
+                console.log(e.responseText);
+            },success: function (result) {
+                if(result['html']!=""){
+                    $('#messages-container').append(result['html']);
+                }
+            },
+            complete: function () {
+                $('#loading-private-chat-contacts').hide();
+            }
+        });
+    }
+
+    function chooseConversation(idReceiver){
+        $('#receiver-id').text(idReceiver);
+        getConversation(true, idReceiver);
+    }
+
+    //Méthode récupère la conv
+    function getConversation(reload, idReceiver){
+        var receiver = $('#receiver-id').text();
+        var sender = "{{ app.user.id }}";//Sender id
+        if(idReceiver != null){
+            receiver = idReceiver;
+        }
+
+        //appel ajax pour recevoir le dernier message de chaque users
+        var json = {
+            idSender: sender,
+            idReceiver: receiver
+        };
+
+        $.ajax({
+            method: "POST",
+            url: '{{ path("get_conversation") }}',
+            data: json,
+            error: function (e) {
+                console.log(e.responseText);
+            },success: function (result) {
+                if(reload == null){
+                    console.log("Conversation par défault");
+                    $('#messages-container').append(result['html']);
+                }else if(reload == true && result['html'] != ""){
+                    console.log("Nouvelle conversation");
+                    $('#messages-container').html(result['html']);
+                }else{
+                    console.log("Aucun message dans la conversation");
+                    $('#messages-container').html("<p>Aucun message</p>");
+                }
+            },
+            complete: function () {
+                $('#loading-private-chat-container').hide();
+            }
+        });
+    }
+
+    function sendMessage(){
+        var receiver = $('#receiver-id').text();
+        var sender = "{{ app.user.id }}";//Sender id
+        var content = $('#private-message').val();
+        console.log(content);
+
+        //check if field is empty
+        if(content != ""){
+            //appel ajax pour recevoir le dernier message de chaque users
+            var json = {
+                idSender: sender,
+                idReceiver: receiver,
+                content: content
+            };
+
+            $.ajax({
+                method: "POST",
+                url: '{{ path("send_message") }}',
+                data: json,
+                error: function (e) {
+                    console.log(e.responseText);
+                },success: function (result) {
+                    $('#messages-container').append(result['html']);
+                },
+                complete: function () {
+//                $('#loading-private-chat-'.concat(index+1)).hide();
+                }
+            });
+        }
+    }
+
+</script>
+
+<!-- DIRECT CHAT -->
+<div class="box box-warning direct-chat direct-chat-warning">
+    <div class="box-header with-border">
+        <h3 class="box-title">Messages Privés</h3>
+
+        <div class="box-tools pull-right">
+            <span data-toggle="tooltip" title="3 New Messages" class="badge bg-yellow">3</span>
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle">
+                <i class="fa fa-comments"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <!-- Conversations are loaded here -->
+        <div class="direct-chat-messages" id="messages-container">
+            <div id="receiver-id" hidden>{% if app.user.id != 1 %}1{% else %}2{% endif %}</div>{# receiver de la conversation #}
+        </div>
+        <!--/.direct-chat-messages-->
+
+        <!-- Contacts are loaded here -->
+        <div class="direct-chat-contacts">
+            <ul class="contacts-list" id="list-last-messages">
+                {% set index = 1 %}
+                {% for user in utilisateurs %}
+                    {% if user.id != app.user.id %}
+                        <li>
+                            <a onclick="chooseConversation({{ user.id }})" data-toggle="tooltip" data-widget="chat-pane-toggle">
+                                <img class="contacts-list-img" src="{% if user.avatar is null %}{{ asset('MusicStudy/dist/img/avatar5.png') }}{% else %}{{ vich_uploader_asset(user.avatar, 'file', 'MusicStudyBundle\\Entity\\Document') }}{% endif %}" alt="Avatar">
+                                <div id="sender-{{ index }}" hidden>{{ user.id }}</div>
+                                <div class="contacts-list-info">
+                                    <span class="contacts-list-name">
+                                        {{ user }}
+                                        <small class="contacts-list-date pull-right" id="date-mess-{{ index }}">Aucun résultat</small>
+                                    </span>
+                                    <span class="contacts-list-msg" id="content-mess-{{ index }}">Aucun résultat</span>
+                                </div>
+                                <!-- /.contacts-list-info -->
+                            </a>
+                        </li>
+                        {% set index = index + 1 %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <div class="overlay" id="loading-private-chat-contacts">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+            <!-- /.contacts-list -->
+        </div>
+        <!-- /.direct-chat-pane -->
+    </div>
+    <div class="overlay" id="loading-private-chat-container">
+        <i class="fa fa-refresh fa-spin"></i>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+        <div class="input-group">
+            <input type="text" name="message" id="private-message" placeholder="Ecrire un message ..." class="form-control">
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-warning btn-flat" onclick="sendMessage()">Envoyer</button>
+              </span>
+        </div>
+    </div>
+    <!-- /.box-footer-->
+</div>
+<!--/.direct-chat -->

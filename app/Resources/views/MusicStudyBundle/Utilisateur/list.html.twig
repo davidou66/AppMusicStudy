@@ -1,0 +1,65 @@
+{% extends 'MusicStudyBundle/base.html.twig' %}
+
+{% block body %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Utilisateurs
+                    <a href="{{ path('create_user') }}" class="icon"> <i class="ion ion-person-add"></i></a>
+            </h1>
+
+            <ol class="breadcrumb">
+                <li><a href="{{ path('dashboard') }}"><i class="fa fa-dashboard"></i> Accueil</a></li>
+                <li class="active">Utilisateurs</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <!-- Small boxes (Stat box) -->
+            {#<div class="row">#}
+                {#<div class="col-lg-3 col-xs-6">#}
+                    {#<!-- small box -->#}
+                    {#<div class="small-box bg-yellow">#}
+                        {#<div class="inner">#}
+                            {#<h3>Ajouter</h3>#}
+                            {#<p>un utilisateur</p>#}
+                        {#</div>#}
+                        {#<div class="icon">#}
+                            {#<a href="{{ path('create_user') }}"> <i class="ion ion-person-add"></i></a>#}
+                        {#</div>#}
+                    {#</div>#}
+                {#</div>#}
+                {#<!-- ./col -->#}
+            {#</div>#}
+
+            <div class="row">
+                <!-- /.row -->
+                {% for user in users %}
+                    <div class="col-md-4">
+                        <!-- Widget: user widget style 1 -->
+                        <div class="box box-widget widget-user-2">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div class="widget-user-header bg-{% if user.color %}{{ user.color }}{% else %}red{% endif %}">
+                                <div class="widget-user-image">
+                                    <img class="img-circle" src="{% if user.avatar %}{{ vich_uploader_asset(user.avatar, 'file', 'MusicStudyBundle\\Entity\\Document') }}{% else %} Todo{% endif %}" alt="User Avatar">
+                                </div>
+                                <!-- /.widget-user-image -->
+                                <h3 class="widget-user-username"><a href="{{ path('update_user', {'id':user.id}) }}" >{{ user.prenom }} {{ user.nom }}</a></h3>
+                            </div>
+                            <div class="box-footer no-padding">
+                                <ul class="nav nav-stacked">
+                                    <li><a href="#">Tâches <span class="pull-right badge bg-aqua">{{ user.tasks|length }}</span></a></li>
+                                    <li><a href="#">Tâches terminées <span class="pull-right badge bg-green">{{ user.tasksEnded|length }}</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /.widget-user -->
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+{% endblock %}

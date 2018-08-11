@@ -1,0 +1,15 @@
+{% if error %}
+    <div class="alert alert-warning">
+        {{ error|trans({}, 'FOSUserBundle') }}
+        <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">&times;</a>
+    </div>
+{% endif %}
+
+<form action="{{ path('fos_user_resetting_reset', {'token': token}) }}" {{ form_enctype(form) }} method="POST" class="fos_user_resetting_reset">
+    <div class="form-group wow fadeInRight" data-wow-delay="0.2s">
+        {{ form_label(form) }}
+        {{ form_widget(form, { 'attr': {'class': 'form-control'} }) }}
+    </div>
+
+    <input class="hvr-grow button full-blue wow zoomIn" data-wow-delay="1s" type="submit" value="{{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}" />
+</form>

@@ -1,0 +1,129 @@
+<script>
+
+    $(document).ready(function(){
+        getConversationGlobal();
+        $( "#global-message" ).on( "keydown", function(event) {
+            if(event.which == 13){
+                sendMessageGlobal();
+                $('#global-message').val('');//Vide l'input
+            }
+        });
+
+        setInterval(autoRefreshConversationGlobal, 10000);
+
+    });
+
+
+    function autoRefreshConversationGlobal(){
+        var lastMessageId = $('#chat-box').children().last().attr('id');
+        console.log(lastMessageId);
+        //appel ajax pour recevoir le dernier message de chaque users
+        var json = {
+            idLastMessage: lastMessageId
+        };
+
+        $.ajax({
+            method: "POST",
+            url: '{{ path("get_last_message") }}',
+            data: json,
+            error: function (e) {
+                console.log(e.responseText);
+            },success: function (result) {
+                if(result['html']!=""){
+                    $('#chat-box').append(result['html']);
+                }
+            },
+            complete: function () {
+//                $('#loading-private-chat-contacts').hide();
+            }
+        });
+    }
+
+    //Méthode récupère la conv
+    function getConversationGlobal(){
+        var sender = "{{ app.user.id }}";//Sender id
+        //appel ajax pour recevoir le dernier message de chaque users
+        var json = {
+            idSender: sender
+        };
+
+        $.ajax({
+            method: "POST",
+            url: '{{ path("get_conversation") }}',
+            data: json,
+            error: function (e) {
+                console.log(e.responseText);
+            },success: function (result) {
+                console.log("Chat global chargemant");
+                $('#chat-box').append(result['html']);
+
+            },
+            complete: function () {
+                $('#loading-chat-container').hide();
+            }
+        });
+    }
+
+    function sendMessageGlobal(){
+        var sender = "{{ app.user.id }}";//Sender id
+        var content = $('#global-message').val();
+        console.log(content);
+
+        //check if field is empty
+        if(content != ""){
+            //appel ajax pour recevoir le dernier message de chaque users
+            var json = {
+                idSender: sender,
+                content: content
+            };
+
+            $.ajax({
+                method: "POST",
+                url: '{{ path("send_message") }}',
+                data: json,
+                error: function (e) {
+                    console.log(e.responseText);
+                },success: function (result) {
+                    $('#chat-box').append(result['html']);
+                },
+                complete: function () {
+//                $('#loading-private-chat-'.concat(index+1)).hide();
+                }
+            });
+        }
+    }
+</script>
+
+<!-- Chat box -->
+<div class="box box-success">
+    <div class="box-header">
+        <i class="fa fa-comments-o"></i>
+
+        <h3 class="box-title">Chat</h3>
+
+        <div class="box-tools pull-right" data-toggle="tooltip" title="Status">
+            <div class="btn-group" data-toggle="btn-toggle">
+                <button type="button" class="btn btn-default btn-sm active"><i class="fa fa-square text-green"></i>
+                </button>
+                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-square text-red"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="box-body chat" id="chat-box">
+
+    </div>
+    <div class="overlay" id="loading-chat-container">
+        <i class="fa fa-refresh fa-spin"></i>
+    </div>
+    <!-- /.chat -->
+    <div class="box-footer">
+        <div class="input-group">
+            <input class="form-control" id="global-message" placeholder="Ecrire un message ...">
+
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-success" onclick="sendMessageGlobal()"><i class="fa fa-plus"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.box (chat box) -->

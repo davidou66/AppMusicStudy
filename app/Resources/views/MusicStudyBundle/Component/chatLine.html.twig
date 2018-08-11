@@ -1,0 +1,23 @@
+{% if direction is not defined %}{% set direction = "sender" %}{% endif %}
+
+<!-- Message. Default to the left -->
+
+<div class="direct-chat-msg{% if direction == "sender" %} right{% endif %}" id="{{ message.id }}">
+    <div class="direct-chat-info clearfix">
+        {% if direction == "receiver" %}
+            <span class="direct-chat-name pull-left">{{ message.sender }}</span>
+            <span class="direct-chat-timestamp pull-right">{{ message.createdAt|date('d/m/Y h:m') }}</span>
+        {% else %}
+            <span class="direct-chat-name pull-right">{{ message.sender}}</span>
+            <span class="direct-chat-timestamp pull-left">{{ message.createdAt|date('d/m/Y h:m') }}</span>
+        {% endif %}
+    </div>
+    <!-- /.direct-chat-info -->{# {% if message.sender.picture is null %}{{ asset('MusicStudy/dist/img/avatar5.png') }}{% else %}{% endif %} #}
+    <img class="direct-chat-img" src="{% if message.sender.avatar %}{{ vich_uploader_asset(message.sender.avatar, 'file', 'MusicStudyBundle\\Entity\\Document') }}{% endif %}" alt="message user image"><!-- /.direct-chat-img -->
+    {#{{ vich_uploader_asset(message.sender.imageFile, 'image', 'Gazoline\\ImmoBundle\\Entity\\Document') }}#}
+    <div class="direct-chat-text">
+        {{ message.content }}
+    </div>
+    <!-- /.direct-chat-text -->
+</div>
+<!-- /.direct-chat-msg -->
