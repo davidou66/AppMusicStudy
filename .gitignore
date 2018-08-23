@@ -1,18 +1,19 @@
 /.web-server-pid
 /app/config/parameters.yml
-/build/
 /phpunit.xml
-/var/*
-!/var/cache
+
+# Cache
 /var/cache/*
-!var/cache/.gitkeep
-!/var/logs
 /var/logs/*
-!var/logs/.gitkeep
-!/var/sessions
 /var/sessions/*
+!var/cache/.gitkeep
+!var/logs/.gitkeep
 !var/sessions/.gitkeep
-!var/SymfonyRequirements.php
+
+# Logs
+/var/log/*
+!var/log/.gitkeep
+
+# Assets/vendors
 /vendor/
 /web/bundles/
-/tests/*
