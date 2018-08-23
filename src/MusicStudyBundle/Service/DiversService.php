@@ -10,7 +10,10 @@ namespace MusicStudyBundle\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 use MusicStudyBundle\Entity\Utilisateur;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 class DiversService
 {
@@ -55,7 +58,8 @@ class DiversService
      * @param Utilisateur $user
      * @return array
      */
-    public function getStatsTypesDocuments(Utilisateur $user){
+    public function getStatsTypesDocuments(Utilisateur $user)
+    {
         $qb = $this->em->getRepository('MusicStudyBundle:Document')->createQueryBuilder('d')
             ->select('COUNT(d) as nbDocuments, d.type')
             ->join('d.utilisateur', 'u')
@@ -64,6 +68,28 @@ class DiversService
             ->groupBy('d.type');
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param QueryBuilder $data
+     * @param int $limit
+     * @param int $offset
+     * @return Pagerfanta
+     */
+    public function paginate(QueryBuilder $data, $limit = 20, $offset = 1)
+    {
+        if($limit === null) $limit = 20;
+        if($offset === null) $offset = 1;
+
+        $adapter = new DoctrineORMAdapter($data);
+
+        $pagerfanta = new Pagerfanta($adapter);
+        if($pagerfanta->getNbResults() > 0){
+            $pagerfanta->setMaxPerPage($limit);
+            $pagerfanta->setCurrentPage($offset);
+        }
+
+        return $pagerfanta;
     }
 
 }

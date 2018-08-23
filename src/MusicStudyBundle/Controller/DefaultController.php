@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use MusicStudyBundle\Service\DiversService;
 use MusicStudyBundle\Service\DocumentService;
 use MusicStudyBundle\Service\TaskService;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -45,7 +46,10 @@ class DefaultController extends Controller
     {
         $statsDashboard = $this->diversService->getStatsDashboard();
         $statsDocuments = $this->documentService->getStatsDocuments($this->getUser()->getId());
-        $tasks = $this->taskService->findTasksByUser($this->getUser()->getId(), true);
+
+        $paginateTasks = $this->diversService->paginate(
+            $this->taskService->findTasksByUser($this->getUser()->getId(), true, true)
+        );
 
         return $this->render('MusicStudyBundle/Default/index.html.twig',
             array(
@@ -54,7 +58,7 @@ class DefaultController extends Controller
                 "lastUsers" => $statsDashboard['lastUsers'],
                 "countDocuments" =>$statsDocuments['countDocuments'],
                 "countDocumentsUser" =>$statsDocuments['countDocumentsUser'],
-                'tasks' => $tasks
+                'paginateTasks' => $paginateTasks
             ));
     }
 
@@ -71,6 +75,27 @@ class DefaultController extends Controller
         return $this->render('MusicStudyBundle/Component/charts.html.twig',
             array(
                 "stats"=>$statsTypesCours
-            ));
+            )
+        );
+    }
+
+    /**
+     * @Route("/tasks_list", name="tasks_list")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function taskAction(Request $request){
+        $limit = $request->get('limit');
+        $index = $request->get('index');
+
+        $paginateTasks = $this->diversService->paginate(
+            $this->taskService->findTasksByUser($this->getUser()->getId(), true, true), $limit, $index
+        );
+
+        return $this->render('MusicStudyBundle/Component/tasks.html.twig',
+            array(
+                "paginateTasks"=>$paginateTasks
+            )
+        );
     }
 }

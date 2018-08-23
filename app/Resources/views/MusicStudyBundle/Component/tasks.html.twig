@@ -5,6 +5,26 @@
             $('#myInput').focus()
         })
     });
+
+    {#function changePageTasks(){#}
+        {#var json = { idEvent: id};#}
+        {#var url = "{{ path("tasks_list") }}";#}
+
+        {#$.ajax({#}
+            {#url: url,#}
+            {#type: 'POST',#}
+            {#data: json,#}
+            {#error: function (e) {#}
+                {#console.log(e.responseText);#}
+            {#},#}
+            {#success: function(data) {#}
+
+            {#},#}
+            {#complete : function() {#}
+
+            {#}#}
+        {#});#}
+    }
 </script>
 
 <!-- Modal -->
@@ -55,19 +75,17 @@
 
         <div class="box-tools pull-right">
             <ul class="pagination pagination-sm inline">
-                <li><a href="#">&laquo;</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">&raquo;</a></li>
+                {% if paginateTasks.nbResults > 0 %}
+                    {{ pagerfanta(paginateTasks, 'twitter_bootstrap') }}
+                {% endif %}
             </ul>
         </div>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
         <ul class="todo-list">
-            {% if tasks|length > 0 %}
-                {% for task in tasks %}
+            {% if paginateTasks.nbResults > 0 %}
+                {% for task in paginateTasks.currentPageResults %}
                     <li>
                         <!-- drag handle -->
                         <span class="handle">
@@ -79,7 +97,7 @@
                         <!-- todo text -->
                         <span class="text">{{ task.content }}</span>
                         <!-- Emphasis label -->
-                        <small class="label label-danger"><i class="fa fa-clock-o"></i>{{ task.duration|date('h:i') }}</small>
+                        <small class="label label-danger"><i class="fa fa-clock-o"></i>{% if task.duration %}{{ task.duration|date('h:i') }}{% endif %}</small>
                         <!-- General tools such as edit or delete-->
                         <div class="tools">
                             <i class="fa fa-edit"></i>

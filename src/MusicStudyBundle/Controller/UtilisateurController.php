@@ -12,6 +12,7 @@ use MusicStudyBundle\Entity\Utilisateur;
 use MusicStudyBundle\Entity\Task;
 use MusicStudyBundle\Form\UserType;
 use MusicStudyBundle\Form\TaskType;
+use MusicStudyBundle\Service\DiversService;
 use MusicStudyBundle\Service\UtilisateurService;
 use MusicStudyBundle\Service\TaskService;
 
@@ -36,13 +37,20 @@ class UtilisateurController extends Controller
     private $taskService;
 
     /**
+     * @var DiversService
+     */
+    private $diversService;
+
+    /**
      * @param UtilisateurService $userService
      * @param TaskService $taskService
+     * @param DiversService $diversService
      */
-    public function __construct(UtilisateurService $userService, TaskService $taskService)
+    public function __construct(UtilisateurService $userService, TaskService $taskService, DiversService $diversService)
     {
         $this->userService = $userService;
         $this->taskService = $taskService;
+        $this->diversService = $diversService;
     }
 
     /**
@@ -62,14 +70,14 @@ class UtilisateurController extends Controller
     public function createUserAction(Request $request, $id = null)
     {
         $user = null;
-        if($id == null){
+        if($id === null){
             $user = new Utilisateur();
             $form = $this->createForm(UserType::class, $user, array(
                     'mdpRequired' => true
                 )
             );
             $formTask = null;
-            $task=null;
+            $paginateTasks = null;
         } else {
             $user = $this->userService->getUtilisateurById($id);
             $task = new Task();
@@ -80,18 +88,19 @@ class UtilisateurController extends Controller
                 )
             );
             $formTask = $this->createForm(TaskType::class, $task);
-            $tasks = $this->taskService->findTasksByUser($id, true);
+            $paginateTasks = $this->diversService->paginate(
+                $this->taskService->findTasksByUser($user->getId(), true, true)
+            );
         }
 
         if ($request->getMethod() == 'POST') {
             $form->handleRequest($request);
             if($formTask) $formTask->handleRequest($request);
+            if($formTask && $formTask->isValid()){
+                dump("create task");
+                $this->taskService->createTask($task);
+            }
             if ($form->isValid()) {
-                if($formTask && $formTask->isValid()){
-                    $this->taskService->createTask($task);
-                    return $this->redirectToRoute('update_user', array('id' => $user->getId()));
-                }
-
                 if($id == null){
                     $this->userService->createUser($user);
                 } else {
@@ -103,7 +112,7 @@ class UtilisateurController extends Controller
 
         }
         if($formTask != null){
-            return array('form' => $form->createView(), 'form_task'=>$formTask->createView(), 'user' => $user, 'tasks'=>$tasks);
+            return array('form' => $form->createView(), 'form_task'=>$formTask->createView(), 'user' => $user, 'paginateTasks'=>$paginateTasks);
         }else{
             return array('form' => $form->createView(), 'form_task'=>null, 'user' => $user);
         }

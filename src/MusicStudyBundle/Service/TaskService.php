@@ -9,6 +9,7 @@
 namespace MusicStudyBundle\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\QueryBuilder;
 use MusicStudyBundle\Entity\Task;
 
 class TaskService
@@ -30,7 +31,7 @@ class TaskService
 
     /**
      * @param $id
-     * @return null|object
+     * @return null|Task
      */
     public function getTaskById($id)
     {
@@ -67,7 +68,7 @@ class TaskService
     /**
      * @param $taskRemoved
      */
-    private function reorder($taskRemoved){
+    private function reorder(Task $taskRemoved){
         //ordonner les taches de l'utilisateur
         $tasksUser = $this->findTasksByUser($taskRemoved->getUtilisateur()->getId(), true);
     }
@@ -75,9 +76,10 @@ class TaskService
     /**
      * @param $id
      * @param null $getAll
-     * @return array
+     * @param $toPaginate
+     * @return array|QueryBuilder
      */
-    public function findTasksByUser($id, $getAll = null){
+    public function findTasksByUser($id, $getAll = null, $toPaginate = false){
         $qb = $this->em->getRepository('MusicStudyBundle:Task')->createQueryBuilder('t')
             ->join('t.utilisateur', 'u')
             ->where('u.id = :idUser')
@@ -85,6 +87,10 @@ class TaskService
             ->orderBy('t.ordre', 'DESC');
         if($getAll == null){
             $qb->setMaxResults(1);
+        }
+
+        if($toPaginate){
+            return $qb;
         }
 
         return $qb->getQuery()->getResult();
