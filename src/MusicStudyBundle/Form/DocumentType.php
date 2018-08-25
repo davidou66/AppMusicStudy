@@ -21,10 +21,13 @@ class DocumentType extends AbstractType
     public function __construct()
     {
     }
-    
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder->add('file', VichFileType::class, array(
             'required'      => true,
             'allow_delete'  => true, // not mandatory, default is true
@@ -50,6 +53,9 @@ class DocumentType extends AbstractType
             ->add("save", SubmitType::class, array('label' => 'Ajouter'));
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(

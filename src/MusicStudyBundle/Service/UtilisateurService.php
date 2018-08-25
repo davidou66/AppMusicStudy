@@ -68,7 +68,7 @@ class UtilisateurService
 
     /**
      * @param $id
-     * @return null|object
+     * @return Utilisateur
      */
     public function getUtilisateurById($id)
     {

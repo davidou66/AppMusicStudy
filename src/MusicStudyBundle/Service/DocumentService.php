@@ -10,6 +10,7 @@ namespace MusicStudyBundle\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use MusicStudyBundle\Entity\Document;
+use MusicStudyBundle\Entity\Utilisateur;
 use MusicStudyBundle\Service\UtilisateurService;
 
 class DocumentService
@@ -94,8 +95,23 @@ class DocumentService
             array('utilisateur' => null)
         );
 
-        return array('countDocuments' => count($documents),
-            'countDocumentsUser'=>count($docByUser));
+        return array('countDocuments' => count($documents), 'countDocumentsUser' => count($docByUser));
+    }
+
+    /**
+     * @param Utilisateur $user
+     * @return array
+     */
+    public function getStatsTypesDocuments(Utilisateur $user)
+    {
+        $qb = $this->em->getRepository('MusicStudyBundle:Document')->createQueryBuilder('d')
+            ->select('COUNT(d) as nbDocuments, d.type')
+            ->join('d.utilisateur', 'u')
+            ->where('u.id = :idUser')
+            ->setParameter('idUser', $user->getId())
+            ->groupBy('d.type');
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

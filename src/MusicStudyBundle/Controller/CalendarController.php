@@ -44,12 +44,10 @@ class CalendarController extends Controller
      */
     public function calendarAction(Request $request)
     {
-//        $users = $this->get('ass_app.user')->getUtilisateurs();
         $newEvents = $this->eventService->getEventsToSet();//EVENT QUI NE SONT PAS ENCORE DANS LE CALENDRIER
         $events = $this->eventService->getCurrentEvents();
 
         return array('newEvents'=>$newEvents, "events"=>$events);
-//        return array('users'=>$users, 'newEvents'=>$newEvents, "events"=>$events);
     }
 
     /**

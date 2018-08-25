@@ -2,6 +2,7 @@
 
 namespace MusicStudyBundle\Controller;
 
+use MusicStudyBundle\Service\PaginatorService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,15 +29,23 @@ class DefaultController extends Controller
     private $taskService;
 
     /**
+     * @var PaginatorService
+     */
+    private $paginatorService;
+
+
+    /**
      * @param DiversService $diversService
      * @param DocumentService $documentService
      * @param TaskService $taskService
+     * @param PaginatorService $paginatorService
      */
-    public function __construct(DiversService $diversService, DocumentService $documentService, TaskService $taskService)
+    public function __construct(DiversService $diversService, DocumentService $documentService, TaskService $taskService, PaginatorService $paginatorService)
     {
         $this->diversService = $diversService;
         $this->documentService = $documentService;
         $this->taskService = $taskService;
+        $this->paginatorService = $paginatorService;
     }
 
     /**
@@ -47,7 +56,7 @@ class DefaultController extends Controller
         $statsDashboard = $this->diversService->getStatsDashboard();
         $statsDocuments = $this->documentService->getStatsDocuments($this->getUser()->getId());
 
-        $paginateTasks = $this->diversService->paginate(
+        $paginateTasks = $this->paginatorService->paginate(
             $this->taskService->findTasksByUser($this->getUser()->getId(), true, true)
         );
 
@@ -68,9 +77,7 @@ class DefaultController extends Controller
     public function chartsAction()
     {
         $user = $this->getUser();
-        $statsTypesCours = $this->diversService->getStatsTypesDocuments($user);
-
-//        $statsTasks = $this->get('ass_app.divers')->getStatsTasks($user);
+        $statsTypesCours = $this->documentService->getStatsTypesDocuments($user);
 
         return $this->render('MusicStudyBundle/Component/charts.html.twig',
             array(
@@ -88,7 +95,7 @@ class DefaultController extends Controller
         $limit = $request->get('limit');
         $index = $request->get('index');
 
-        $paginateTasks = $this->diversService->paginate(
+        $paginateTasks = $this->paginatorService->paginate(
             $this->taskService->findTasksByUser($this->getUser()->getId(), true, true), $limit, $index
         );
 

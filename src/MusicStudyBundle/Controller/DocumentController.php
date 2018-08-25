@@ -55,8 +55,8 @@ class DocumentController extends Controller
         }
 
         return array(
-                'form' => $form->createView(),
-                'documents'=>$documents
+            'form' => $form->createView(),
+            'documents'=>$documents
         );
     }
 
@@ -80,6 +80,7 @@ class DocumentController extends Controller
     public function deleteAction(Request $request, $id)
     {
         $this->documentService->deleteDocument($id);
+
         return $this->redirectToRoute('list_document');
     }
 

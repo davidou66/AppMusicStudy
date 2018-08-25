@@ -27,17 +27,6 @@
 
                             <h3 class="profile-username text-center">{% if user.id is not null %}{{ user.prenom }} {{ user.nom }}{% else %}Nouvel Utilisateur{% endif %}</h3>
 
-                            {#<ul class="list-group list-group-unbordered">#}
-                                {#<li class="list-group-item">#}
-                                    {#<b>Followers</b> <a class="pull-right">1,322</a>#}
-                                {#</li>#}
-                                {#<li class="list-group-item">#}
-                                    {#<b>Following</b> <a class="pull-right">543</a>#}
-                                {#</li>#}
-                                {#<li class="list-group-item">#}
-                                    {#<b>Friends</b> <a class="pull-right">13,287</a>#}
-                                {#</li>#}
-                            {#</ul>#}
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -50,7 +39,7 @@
                             <li class="active"><a href="#settings" data-toggle="tab">Paramètres</a></li>
                             {% if user.id is not null %}
                                 <li><a href="#tasks" data-toggle="tab">Tâches</a></li>
-                                <li><a href="#stats" data-toggle="tab">Statistiques</a></li>
+                                {#<li><a href="#stats" data-toggle="tab">Statistiques</a></li>#}
                             {% endif %}
                         </ul>
                         <div class="tab-content">
@@ -153,9 +142,9 @@
                                 </div>
                             </div>
                             <!-- /.tab-pane -->
-                            <div class="tab-pane" id="stats">
+                            {#<div class="tab-pane" id="stats">#}
 
-                            </div>
+                            {#</div>#}
                             <!-- /.tab-pane -->
                             <div class="tab-pane" id="tasks">
                                 {% if form_task is not null %}

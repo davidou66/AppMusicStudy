@@ -13,6 +13,7 @@ use MusicStudyBundle\Entity\Task;
 use MusicStudyBundle\Form\UserType;
 use MusicStudyBundle\Form\TaskType;
 use MusicStudyBundle\Service\DiversService;
+use MusicStudyBundle\Service\PaginatorService;
 use MusicStudyBundle\Service\UtilisateurService;
 use MusicStudyBundle\Service\TaskService;
 
@@ -25,7 +26,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class UtilisateurController extends Controller
 {
-
     /**
      * @var UtilisateurService
      */
@@ -39,18 +39,18 @@ class UtilisateurController extends Controller
     /**
      * @var DiversService
      */
-    private $diversService;
+    private $paginatorService;
 
     /**
      * @param UtilisateurService $userService
      * @param TaskService $taskService
-     * @param DiversService $diversService
+     * @param PaginatorService $paginatorService
      */
-    public function __construct(UtilisateurService $userService, TaskService $taskService, DiversService $diversService)
+    public function __construct(UtilisateurService $userService, TaskService $taskService, PaginatorService $paginatorService)
     {
         $this->userService = $userService;
         $this->taskService = $taskService;
-        $this->diversService = $diversService;
+        $this->paginatorService = $paginatorService;
     }
 
     /**
@@ -64,59 +64,66 @@ class UtilisateurController extends Controller
 
     /**
      * @Route("/user/create", name="create_user")
-     * @Route("/user/update/{id}", name="update_user")
      * @Template("MusicStudyBundle/Utilisateur/create.html.twig")
      */
-    public function createUserAction(Request $request, $id = null)
+    public function createUserAction(Request $request)
     {
-        $user = null;
-        if($id === null){
-            $user = new Utilisateur();
-            $form = $this->createForm(UserType::class, $user, array(
-                    'mdpRequired' => true
-                )
-            );
-            $formTask = null;
-            $paginateTasks = null;
-        } else {
-            $user = $this->userService->getUtilisateurById($id);
-            $task = new Task();
-            $task->setUtilisateur($user);
-            $form = $this->createForm(UserType::class, $user,
-                array(
-                    'mdpRequired' => false
-                )
-            );
-            $formTask = $this->createForm(TaskType::class, $task);
-            $paginateTasks = $this->diversService->paginate(
-                $this->taskService->findTasksByUser($user->getId(), true, true)
-            );
-        }
+        $user = new Utilisateur();
+        $form = $this->createForm(UserType::class, $user, array(
+                'mdpRequired' => true
+            )
+        );
 
         if ($request->getMethod() == 'POST') {
             $form->handleRequest($request);
-            if($formTask) $formTask->handleRequest($request);
-            if($formTask && $formTask->isValid()){
-                dump("create task");
+            if ($form->isValid()) {
+                $this->userService->createUser($user);
+                return $this->redirectToRoute('update_user', array('id' => $user->getId()));
+            }
+        }
+
+        return array('form' => $form->createView(), 'form_task' => null, 'user' => $user);
+    }
+
+    /**
+     * @Route("/user/update/{id}", name="update_user")
+     * @Template("MusicStudyBundle/Utilisateur/create.html.twig")
+     */
+    public function updateUser(Request $request, $id = null)
+    {
+        $user = $this->userService->getUtilisateurById($id);
+
+        if($user === null){
+            return $this->renderView("MusicStudyBundle/Component/404.html.twig");
+        }
+
+        $task = new Task();
+        $task->setUtilisateur($user);
+
+        $form = $this->createForm(UserType::class, $user,
+            array(
+                'mdpRequired' => false
+            )
+        );
+        $formTask = $this->createForm(TaskType::class, $task);
+
+        $paginateTasks = $this->paginatorService->paginate(
+            $this->taskService->findTasksByUser($user->getId(), true, true)
+        );
+
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
+            $formTask->handleRequest($request);
+
+            if($formTask->isValid()){
                 $this->taskService->createTask($task);
             }
             if ($form->isValid()) {
-                if($id == null){
-                    $this->userService->createUser($user);
-                } else {
-                    $this->userService->updateUser($user);
-                }
-
-                return $this->redirectToRoute('update_user', array('id' => $user->getId()));
+                $this->userService->updateUser($user);
             }
-
-        }
-        if($formTask != null){
-            return array('form' => $form->createView(), 'form_task'=>$formTask->createView(), 'user' => $user, 'paginateTasks'=>$paginateTasks);
-        }else{
-            return array('form' => $form->createView(), 'form_task'=>null, 'user' => $user);
         }
 
+        return array('form' => $form->createView(), 'form_task' => $formTask->createView(), 'user' => $user, 'paginateTasks' => $paginateTasks);
     }
 
     /**

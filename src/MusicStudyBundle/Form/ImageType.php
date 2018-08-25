@@ -23,7 +23,11 @@ class ImageType extends AbstractType
     public function __construct()
     {
     }
-    
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('file', VichFileType::class, array(
@@ -33,11 +37,14 @@ class ImageType extends AbstractType
             'label'=> 'Parcourir'
         ))
         ->add('displayable', HiddenType::class, array(
-            'data' => true
+            'data' => false
         ))
         ;
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(

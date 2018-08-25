@@ -15,7 +15,7 @@ use MusicStudyBundle\Entity\Utilisateur;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
-class DiversService
+class PaginatorService
 {
     /**
      * @var EntityManager
@@ -33,24 +33,25 @@ class DiversService
     }
 
     /**
-     * @return array
+     * @param QueryBuilder $data
+     * @param int $limit
+     * @param int $offset
+     * @return Pagerfanta
      */
-    public function getStatsDashboard()
+    public function paginate(QueryBuilder $data, $limit = 20, $offset = 1)
     {
-        $users = $this->em->getRepository('MusicStudyBundle:Utilisateur')->findAll();
+        if($limit === null) $limit = 20;
+        if($offset === null) $offset = 1;
 
-        $nbUsers = count($users);
-        if($nbUsers>10){
-            $lastUsers = array_slice($users, -($nbUsers-11));
-        }else{
-            $lastUsers = $users;
+        $adapter = new DoctrineORMAdapter($data);
+
+        $pagerfanta = new Pagerfanta($adapter);
+        if($pagerfanta->getNbResults() > 0){
+            $pagerfanta->setMaxPerPage($limit);
+            $pagerfanta->setCurrentPage($offset);
         }
 
-        $statsDashboard = array(
-            'countUsers'=>count($users),
-            'utilisateurs' => $users,
-            'lastUsers' => $lastUsers
-        );
-        return $statsDashboard;
+        return $pagerfanta;
     }
+
 }

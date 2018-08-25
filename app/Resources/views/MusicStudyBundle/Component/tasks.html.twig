@@ -93,7 +93,7 @@
                             <i class="fa fa-ellipsis-v"></i>
                         </span>
                         <!-- checkbox -->
-                        <input type="checkbox" id="task_check_{{ task.id }}"  value="" {% if task.done == true %}checked{% endif %}>
+                        <input type="checkbox" id="task_check_{{ task.id }}"  value="{% if task.done %}checked{% endif %}">
                         <!-- todo text -->
                         <span class="text">{{ task.content }}</span>
                         <!-- Emphasis label -->
