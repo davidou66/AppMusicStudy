@@ -76,11 +76,11 @@ class Document
     /**
      * @var bool
      *
-     * @ORM\column(type="boolean", options={"default" : 0})
+     * @ORM\column(type="boolean", options={"default" : false})
      */
-    private $displayable = 0;
+    private $displayable = false;
 
-    public function __construct($displayable)
+    public function __construct($displayable = false)
     {
         $this->displayable = $displayable;
     }

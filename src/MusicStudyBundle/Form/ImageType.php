@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Vich\UploaderBundle\Form\Type\VichFileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 /**
  * Created by PhpStorm.
@@ -30,13 +31,11 @@ class ImageType extends AbstractType
             'allow_delete'  => false, // not mandatory, default is true
             'download_link' => false, // not mandatory, default is true
             'label'=> 'Parcourir'
-        ));
-
-//        if($options['needDescription'] !== false){
-//            $builder->add("fileName", 'text', array('attr'=> array('class' => 'form-control'), "label" => "Nom", 'required' => false))
-//                ->add("save", SubmitType::class, array('label' => 'Ajouter'));
-//        }
-
+        ))
+        ->add('displayable', HiddenType::class, array(
+            'data' => true
+        ))
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
