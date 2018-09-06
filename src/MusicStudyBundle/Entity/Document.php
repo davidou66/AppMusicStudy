@@ -76,7 +76,7 @@ class Document
     /**
      * @var bool
      *
-     * @ORM\column(type="boolean", options={"default" : false})
+     * @ORM\column(name="display", type="boolean", options={"default" : false}, nullable=true)
      */
     private $displayable = false;
 
