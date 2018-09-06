@@ -24,7 +24,30 @@
 
             {#}#}
         {#});#}
+
+    function removeTask(idTask) {
+
+        //appel ajax pour recevoir le dernier message de chaque users
+        var json = {
+            idTask: idTask
+        };
+
+        $.ajax({
+            method: "POST",
+            url: '{{ path("remove_task") }}',
+            data: json,
+            error: function (e) {
+                console.log(e.responseText);
+            },success: function (result) {
+                $('#messages-container').append(result['html']);
+            },
+            complete: function () {
+//                $('#loading-private-chat-'.concat(index+1)).hide();
+            }
+        });
+
     }
+
 </script>
 
 <!-- Modal -->

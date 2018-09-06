@@ -52,7 +52,7 @@
     },
     "config": {
         "platform": {
-            "php": "7.1.14"
+            "php": "7.0.30"
         },
         "sort-packages": true
     },

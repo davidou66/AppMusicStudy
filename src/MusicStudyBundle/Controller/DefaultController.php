@@ -105,4 +105,16 @@ class DefaultController extends Controller
             )
         );
     }
+
+    /**
+     * @Route("/remove_task", name="remove_task")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function removeTaskAction(Request $request){
+        //TODO: Remove / Response
+        $idTask = $request->get('idTask');
+
+
+    }
 }
