@@ -30,20 +30,3 @@ services:
         resource: '../../src/MusicStudyBundle/Controller'
         public: true
         tags: ['controller.service_arguments']
-
-
-
-#    MusicStudyBundle\Service\DiversService:
-#        arguments: ['@doctrine.orm.entity_manager']
-#
-#    MusicStudyBundle\Service\DocumentService:
-#        arguments: ['@doctrine.orm.entity_manager']
-#
-#    MusicStudyBundle\Service\EventService:
-#        arguments: ['@doctrine.orm.entity_manager']
-#
-#    MusicStudyBundle\Service\MessageService:
-#        arguments: ['@doctrine.orm.entity_manager']
-#
-#    MusicStudyBundle\Service\TaskService:
-#        arguments: ['@doctrine.orm.entity_manager']

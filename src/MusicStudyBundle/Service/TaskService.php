@@ -55,13 +55,13 @@ class TaskService
     }
 
     /**
-     * @param $id
+     * @param Task $task
+     *
+     * @return boolean
      */
-    public function deleteTask($id)
+    public function deleteTask(Task $task)
     {
-        $task = $this->getTaskById($id);
         $this->em->remove($task);
-        $this->reorder($task);
         $this->em->flush();
     }
 

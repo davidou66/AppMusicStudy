@@ -42,7 +42,7 @@
                 $('#messages-container').append(result['html']);
             },
             complete: function () {
-//                $('#loading-private-chat-'.concat(index+1)).hide();
+
             }
         });
 
@@ -120,11 +120,11 @@
                         <!-- todo text -->
                         <span class="text">{{ task.content }}</span>
                         <!-- Emphasis label -->
-                        <small class="label label-danger"><i class="fa fa-clock-o"></i>{% if task.duration %}{{ task.duration|date('h:i') }}{% endif %}</small>
+                        <small class="label label-danger">{% if task.duration %}{{ task.duration|date('h:i') }}{% endif %}</small>
                         <!-- General tools such as edit or delete-->
                         <div class="tools">
-                            <i class="fa fa-edit"></i>
-                            <a href="#"></a><i class="fa fa-trash-o" ></i>
+                            {#<i class="fa fa-edit"></i>#}
+                            <i onclick="removeTask({{ task.id }})" class="fa fa-trash-o" ></i>
                         </div>
                     </li>
                 {% endfor %}

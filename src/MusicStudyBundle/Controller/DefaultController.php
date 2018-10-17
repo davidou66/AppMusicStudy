@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use MusicStudyBundle\Service\DiversService;
 use MusicStudyBundle\Service\DocumentService;
 use MusicStudyBundle\Service\TaskService;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
@@ -112,9 +113,10 @@ class DefaultController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function removeTaskAction(Request $request){
-        //TODO: Remove / Response
-        $idTask = $request->get('idTask');
+        $task = $this->taskService->getTaskById($request->get('idTask'));
 
+        $this->taskService->deleteTask($task);
 
+        return new Response();
     }
 }

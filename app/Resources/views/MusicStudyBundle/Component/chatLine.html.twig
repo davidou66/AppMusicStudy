@@ -13,7 +13,9 @@
         {% endif %}
     </div>
     <!-- /.direct-chat-info -->{# {% if message.sender.picture is null %}{{ asset('MusicStudy/dist/img/avatar5.png') }}{% else %}{% endif %} #}
-    <img class="direct-chat-img" src="{% if message.sender.avatar %}{{ vich_uploader_asset(message.sender.avatar, 'file', 'MusicStudyBundle\\Entity\\Document') }}{% endif %}" alt="message user image"><!-- /.direct-chat-img -->
+    <div class="widget-user-image">
+        <img class="direct-chat-img" src="{% if message.sender.avatar %}{{ vich_uploader_asset(message.sender.avatar, 'file', 'MusicStudyBundle\\Entity\\Document') }}{% endif %}" alt="message user image"><!-- /.direct-chat-img -->
+    </div>
     {#{{ vich_uploader_asset(message.sender.imageFile, 'image', 'Gazoline\\ImmoBundle\\Entity\\Document') }}#}
     <div class="direct-chat-text">
         {{ message.content }}

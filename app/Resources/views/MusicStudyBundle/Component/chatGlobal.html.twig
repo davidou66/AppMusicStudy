@@ -16,8 +16,7 @@
 
     function autoRefreshConversationGlobal(){
         var lastMessageId = $('#chat-box').children().last().attr('id');
-        console.log(lastMessageId);
-        //appel ajax pour recevoir le dernier message de chaque users
+
         var json = {
             idLastMessage: lastMessageId
         };
@@ -34,15 +33,14 @@
                 }
             },
             complete: function () {
-//                $('#loading-private-chat-contacts').hide();
+
             }
         });
     }
 
-    //Méthode récupère la conv
     function getConversationGlobal(){
-        var sender = "{{ app.user.id }}";//Sender id
-        //appel ajax pour recevoir le dernier message de chaque users
+        var sender = "{{ app.user.id }}";
+
         var json = {
             idSender: sender
         };
@@ -65,13 +63,10 @@
     }
 
     function sendMessageGlobal(){
-        var sender = "{{ app.user.id }}";//Sender id
+        var sender = "{{ app.user.id }}";
         var content = $('#global-message').val();
-        console.log(content);
 
-        //check if field is empty
         if(content != ""){
-            //appel ajax pour recevoir le dernier message de chaque users
             var json = {
                 idSender: sender,
                 content: content
@@ -87,7 +82,6 @@
                     $('#chat-box').append(result['html']);
                 },
                 complete: function () {
-//                $('#loading-private-chat-'.concat(index+1)).hide();
                 }
             });
         }

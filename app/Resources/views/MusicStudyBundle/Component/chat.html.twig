@@ -1,8 +1,10 @@
 <script>
 
     $(document).ready(function(){
-        getConversation();
+        //Get last message for contacts list
         getLastMessages();
+
+        //attach event on input field
         $( "#private-message" ).on( "keydown", function(event) {
             if(event.which == 13){
                 sendMessage();
@@ -10,12 +12,15 @@
             }
         });
 
+        //set refresh interval for conversations
         setInterval(autoRefreshConversation, 10000);
 
+        $('#loading-private-chat-container').hide();
     });
 
-    //Méthode récupère lastMessage pour chaque contact
+    //Get last messages for each contacts
     function getLastMessages(){
+        console.log("finding last messages");
         $('#list-last-messages li').each(function( index, element ) {
             var sender = $(element).find('#sender-'.concat(index+1)).text();//sender id
             var receiver = "{{ app.user.id }}";
@@ -32,9 +37,13 @@
                 error: function (e) {
                     console.log(e.responseText);
                 },success: function (result) {
+                    console.log(result);
                     if(result['date']!=null && result['content']!=null){
+                        console.log("setting last messages");
                         $(element).find('#date-mess-'.concat(index+1)).text(result['date']);//Set the date
                         $(element).find('#content-mess-'.concat(index+1)).text(result['content']);//Set the content
+                    }else{
+                        console.log("No messages found");
                     }
                 },
                 complete: function () {
@@ -48,8 +57,7 @@
         var sender = $('#receiver-id').text();//sender id
         var receiver = "{{ app.user.id }}";
         var lastMessageId = $('#messages-container').children().last().attr('id');
-        console.log(lastMessageId);
-        //appel ajax pour recevoir le dernier message de chaque users
+
         var json = {
             idSender: sender,
             idReceiver: receiver,
@@ -74,12 +82,13 @@
         });
     }
 
-    function chooseConversation(idReceiver){
+    function chooseConversation(idReceiver, userName){
         $('#receiver-id').text(idReceiver);
+        $('#conversation-name').text("à " + userName);
         getConversation(true, idReceiver);
     }
 
-    //Méthode récupère la conv
+    //Get conversation for a contact
     function getConversation(reload, idReceiver){
         var receiver = $('#receiver-id').text();
         var sender = "{{ app.user.id }}";//Sender id
@@ -87,7 +96,6 @@
             receiver = idReceiver;
         }
 
-        //appel ajax pour recevoir le dernier message de chaque users
         var json = {
             idSender: sender,
             idReceiver: receiver
@@ -121,11 +129,8 @@
         var receiver = $('#receiver-id').text();
         var sender = "{{ app.user.id }}";//Sender id
         var content = $('#private-message').val();
-//        console.log(content);
 
-        //check if field is empty
         if(content != ""){
-            //appel ajax pour recevoir le dernier message de chaque users
             var json = {
                 idSender: sender,
                 idReceiver: receiver,
@@ -142,7 +147,7 @@
                     $('#messages-container').append(result['html']);
                 },
                 complete: function () {
-//                $('#loading-private-chat-'.concat(index+1)).hide();
+                    $('#private-message').val(''); //empty send field
                 }
             });
         }
@@ -153,7 +158,7 @@
 <!-- DIRECT CHAT -->
 <div class="box box-warning direct-chat direct-chat-warning">
     <div class="box-header with-border">
-        <h3 class="box-title">Messages Privés</h3>
+        <h3 class="box-title">Messages Privés </h3><p id="conversation-name">Aucune conversation selectionnée</p>
 
         <div class="box-tools pull-right">
             {#<span data-toggle="tooltip" title="3 New Messages" class="badge bg-yellow">3</span>#}
@@ -168,9 +173,8 @@
     <!-- /.box-header -->
     <div class="box-body">
         <!-- Conversations are loaded here -->
-        <div class="direct-chat-messages" id="messages-container">
-            <div id="receiver-id" hidden>{% if app.user.id != 1 %}1{% else %}2{% endif %}</div>{# receiver de la conversation #}
-        </div>
+        <p id="receiver-id" hidden></p>{# receiver de la conversation #}
+        <div class="direct-chat-messages" id="messages-container"></div>
         <!--/.direct-chat-messages-->
 
         <!-- Contacts are loaded here -->
@@ -180,7 +184,7 @@
                 {% for user in utilisateurs %}
                     {% if user.id != app.user.id %}
                         <li>
-                            <a onclick="chooseConversation({{ user.id }})" data-toggle="tooltip" data-widget="chat-pane-toggle">
+                            <a onclick="chooseConversation({{ user.id }}, '{{ user }}')" data-toggle="tooltip" data-widget="chat-pane-toggle">
                                 <img class="contacts-list-img" src="{% if user.avatar is null %}{{ asset('MusicStudy/dist/img/avatar5.png') }}{% else %}{{ vich_uploader_asset(user.avatar, 'file', 'MusicStudyBundle\\Entity\\Document') }}{% endif %}" alt="Avatar">
                                 <div id="sender-{{ index }}" hidden>{{ user.id }}</div>
                                 <div class="contacts-list-info">
@@ -204,7 +208,7 @@
         </div>
         <!-- /.direct-chat-pane -->
     </div>
-    <div class="overlay" id="loading-private-chat-container">
+    <div class="overlay" id="loading-private-chat-container" hidden>
         <i class="fa fa-refresh fa-spin"></i>
     </div>
     <!-- /.box-body -->

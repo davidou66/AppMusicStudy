@@ -1,44 +1,6 @@
 {% extends 'MusicStudyBundle/base.html.twig' %}
 
 {% block body %}
-    {#<script>#}
-        {#$( document ).ready(function() {#}
-            {#var url =  "{{ url('dashboard') }}".replace("app_dev.php", "");#}
-            {#{% for doc in documents %}#}
-                {#var path = "{{ vich_uploader_asset(doc, 'file', 'AppBundle\\Entity\\Document') }}";#}
-            {#var idDiv = "#dl-link-";#}
-            {#var idDivC = idDiv.concat("{{ doc.id }}");#}
-                {#$(idDivC).attr("href", url.slice(0,-1) + result['path']);#}
-            {#{% endfor %}#}
-        {#});#}
-        {#function downloadFile(idFile, idUser) {#}
-            {#var json = {#}
-                {#idFile: idFile,#}
-                {#idUser: idUser#}
-            {#};#}
-
-            {#$.ajax({#}
-                {#method: "POST",#}
-                {#url: '{{ path("download_document") }}',#}
-                {#data: json,#}
-                {#error: function (e) {#}
-                    {#console.log(e.responseText);#}
-                {#},success: function (result) {#}
-                    {#console.log($("#dl-link-"+idFile).attr('href'));#}
-                    {#if ($("#dl-link-"+idFile).attr('href') === undefined) {#}
-                        {#var url =  "{{ url('dashboard') }}".replace("app_dev.php", "");#}
-                        {#$("#dl-link-"+idFile).attr("href", url.slice(0,-1) + result['path']);#}
-                        {#$("#dl-link-"+idFile).trigger('click');#}
-                    {#}#}
-                {#},#}
-                {#complete: function () {#}
-{#//                    $("#inputqueryprospect").siblings("#trigger_search_option").removeClass("searching");#}
-{#//                    $('.prospect-info').removeClass('selected');#}
-{#//                    $('#prospect-info-option-'+idProspect).addClass('selected');#}
-                {#}#}
-            {#})#}
-        {#}#}
-    {#</script>#}
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
