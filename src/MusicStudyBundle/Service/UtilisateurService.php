@@ -110,6 +110,9 @@ class UtilisateurService
         return array('password'=>$password,'user'=>$user);
     }
 
+    /**
+     * @param Utilisateur $user
+     */
     public function updateUser(Utilisateur $user)
     {
         if($user->getPlainPassword() != null){

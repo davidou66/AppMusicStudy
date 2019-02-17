@@ -6,6 +6,8 @@ use MusicStudyBundle\Entity\Document;
 use MusicStudyBundle\Form\DocumentType;
 use MusicStudyBundle\Service\DocumentService;
 
+use MusicStudyBundle\Service\PaginatorService;
+use MusicStudyBundle\Service\UtilisateurService;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -28,13 +30,27 @@ class DocumentController extends Controller
     private $uploadHelper;
 
     /**
+     * @var UtilisateurService
+     */
+    private $userService;
+
+    /**
+     * @var PaginatorService
+     */
+    private $paginatorService;
+
+    /**
      * @param DocumentService $documentService
      * @param UploaderHelper $uploaderHelper
+     * @param UtilisateurService $userService
+     * @param PaginatorService $paginatorService
      */
-    public function __construct(DocumentService $documentService, UploaderHelper $uploaderHelper)
+    public function __construct(DocumentService $documentService, UploaderHelper $uploaderHelper, UtilisateurService $userService, PaginatorService $paginatorService)
     {
         $this->documentService = $documentService;
         $this->uploadHelper = $uploaderHelper;
+        $this->userService = $userService;
+        $this->paginatorService = $paginatorService;
     }
 
     /**
@@ -43,32 +59,31 @@ class DocumentController extends Controller
      */
     public function listAction(Request $request)
     {
-        $documents = $this->documentService->getDocuments();
-        $document = new Document($displayable = true);
-        $form = $this->createForm(DocumentType::class, $document);
-        if ($request->getMethod() == 'POST') {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $this->documentService->createDocument($document);
-                return $this->redirectToRoute('list_document');
+        //Get Documents list
+        $documents = $this->documentService->getDocumentsByUser($id = null, $count = false, $toPaginate = true);
+        $limit = 30;
+        $page = $request->get('page');
+
+        $paginateDocuments = $this->paginatorService->paginate($documents, $limit, $page);
+
+        //Create form if user is admin
+        if($this->userService->isAdmin()){
+            $document = new Document($displayable = true);
+            $form = $this->createForm(DocumentType::class, $document);
+            if ($request->getMethod() == 'POST') {
+                $form->handleRequest($request);
+                if ($form->isValid()) {
+                    $this->documentService->createDocument($document);
+                    return $this->redirectToRoute('list_document');
+                }
             }
+        }else{
+            $form = null;
         }
 
         return array(
-            'form' => $form->createView(),
-            'documents'=>$documents
-        );
-    }
-
-    /**
-     * @Route("/doc/user/{id}", name="user_document")
-     * @Template("MusicStudyBundle/Document/list.html.twig")
-     */
-    public function listDocumentsPersoAction(Request $request, $id)
-    {
-        return array(
-            'documents'=>$this->documentService->getDocumentsByUser($request->get('index'), $request->get('count'), $id),
-            'form'=>null
+            'form' => $form == null ? $form : $form->createView(),
+            'paginateDocuments' => $paginateDocuments
         );
     }
 

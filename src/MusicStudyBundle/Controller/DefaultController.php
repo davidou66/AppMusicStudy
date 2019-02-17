@@ -6,18 +6,16 @@ use MusicStudyBundle\Service\PaginatorService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use MusicStudyBundle\Service\DiversService;
+use MusicStudyBundle\Service\StatService;
 use MusicStudyBundle\Service\DocumentService;
 use MusicStudyBundle\Service\TaskService;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
     /**
-     * @var DiversService
+     * @var StatService
      */
-    private $diversService;
+    private $statService;
 
     /**
      * @var DocumentService
@@ -34,16 +32,15 @@ class DefaultController extends Controller
      */
     private $paginatorService;
 
-
     /**
-     * @param DiversService $diversService
+     * @param StatService $statService
      * @param DocumentService $documentService
      * @param TaskService $taskService
      * @param PaginatorService $paginatorService
      */
-    public function __construct(DiversService $diversService, DocumentService $documentService, TaskService $taskService, PaginatorService $paginatorService)
+    public function __construct(StatService $statService, DocumentService $documentService, TaskService $taskService, PaginatorService $paginatorService)
     {
-        $this->diversService = $diversService;
+        $this->statService = $statService;
         $this->documentService = $documentService;
         $this->taskService = $taskService;
         $this->paginatorService = $paginatorService;
@@ -54,8 +51,8 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $statsDashboard = $this->diversService->getStatsDashboard();
-        $statsDocuments = $this->documentService->getStatsDocuments($this->getUser()->getId());
+        $statsDashboard = $this->statService->getStatsDashboard();
+        $statsDocuments = $this->documentService->getStatsDocuments();
 
         $paginateTasks = $this->paginatorService->paginate(
             $this->taskService->findTasksByUser($this->getUser()->getId(), true, true)
@@ -66,8 +63,7 @@ class DefaultController extends Controller
                 "countUsers" => $statsDashboard['countUsers'],
                 "utilisateurs" => $statsDashboard['utilisateurs'],
                 "lastUsers" => $statsDashboard['lastUsers'],
-                "countDocuments" =>$statsDocuments['countDocuments'],
-                "countDocumentsUser" =>$statsDocuments['countDocumentsUser'],
+                "countDocumentsUser" => $statsDocuments['countDocumentsUser'],
                 'paginateTasks' => $paginateTasks
             ));
     }
@@ -87,36 +83,4 @@ class DefaultController extends Controller
         );
     }
 
-    /**
-     * @Route("/tasks_list", name="tasks_list")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function taskAction(Request $request){
-        $limit = $request->get('limit');
-        $index = $request->get('index');
-
-        $paginateTasks = $this->paginatorService->paginate(
-            $this->taskService->findTasksByUser($this->getUser()->getId(), true, true), $limit, $index
-        );
-
-        return $this->render('MusicStudyBundle/Component/tasks.html.twig',
-            array(
-                "paginateTasks"=>$paginateTasks
-            )
-        );
-    }
-
-    /**
-     * @Route("/remove_task", name="remove_task")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function removeTaskAction(Request $request){
-        $task = $this->taskService->getTaskById($request->get('idTask'));
-
-        $this->taskService->deleteTask($task);
-
-        return new Response();
-    }
 }

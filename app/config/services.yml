@@ -30,3 +30,11 @@ services:
         resource: '../../src/MusicStudyBundle/Controller'
         public: true
         tags: ['controller.service_arguments']
+
+    pagerfanta.view.task_view:
+        class: 'Pagerfanta\View\OptionableView'
+        arguments:
+            - '@pagerfanta.view.default'
+            - { proximity: 3, prev_message: 'Prec.', next_message: 'Suiv.' }
+        public: false
+        tags: [{ name: pagerfanta.view, alias: task_view }]

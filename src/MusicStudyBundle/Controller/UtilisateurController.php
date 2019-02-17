@@ -12,7 +12,6 @@ use MusicStudyBundle\Entity\Utilisateur;
 use MusicStudyBundle\Entity\Task;
 use MusicStudyBundle\Form\UserType;
 use MusicStudyBundle\Form\TaskType;
-use MusicStudyBundle\Service\DiversService;
 use MusicStudyBundle\Service\PaginatorService;
 use MusicStudyBundle\Service\UtilisateurService;
 use MusicStudyBundle\Service\TaskService;
@@ -22,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 class UtilisateurController extends Controller
@@ -37,7 +37,7 @@ class UtilisateurController extends Controller
     private $taskService;
 
     /**
-     * @var DiversService
+     * @var PaginatorService
      */
     private $paginatorService;
 
@@ -94,7 +94,8 @@ class UtilisateurController extends Controller
         $user = $this->userService->getUtilisateurById($id);
 
         if($user === null){
-            return $this->renderView("MusicStudyBundle/Component/404.html.twig");
+//            return $this->renderView("MusicStudyBundle/Component/404.html.twig");
+            throw new NotFoundHttpException();
         }
 
         $task = new Task();

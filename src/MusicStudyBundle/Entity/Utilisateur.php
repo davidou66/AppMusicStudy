@@ -115,6 +115,10 @@ class Utilisateur extends BaseUser
 
     public function __toString()
     {
+        if($this->getPrenom() == null && $this->getNom() == null){
+            return $this->getUsername();
+        }
+
         return $this->getPrenom() . ' ' . $this->getNom();
     }
 

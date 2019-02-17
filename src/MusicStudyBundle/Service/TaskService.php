@@ -56,6 +56,15 @@ class TaskService
 
     /**
      * @param Task $task
+     */
+    public function updateTask(Task $task)
+    {
+        $this->em->update($task);
+        $this->em->flush();
+    }
+
+    /**
+     * @param Task $task
      *
      * @return boolean
      */
@@ -68,7 +77,8 @@ class TaskService
     /**
      * @param $taskRemoved
      */
-    private function reorder(Task $taskRemoved){
+    private function reorder(Task $taskRemoved)
+    {
         //ordonner les taches de l'utilisateur
         $tasksUser = $this->findTasksByUser($taskRemoved->getUtilisateur()->getId(), true);
     }
@@ -79,12 +89,14 @@ class TaskService
      * @param $toPaginate
      * @return array|QueryBuilder
      */
-    public function findTasksByUser($id, $getAll = null, $toPaginate = false){
+    public function findTasksByUser($id, $getAll = null, $toPaginate = false)
+    {
         $qb = $this->em->getRepository('MusicStudyBundle:Task')->createQueryBuilder('t')
             ->join('t.utilisateur', 'u')
             ->where('u.id = :idUser')
             ->setParameter('idUser', $id)
-            ->orderBy('t.ordre', 'DESC');
+            ->orderBy('t.ordre', 'DESC')
+            ->orderBy('t.done', 'DESC');
         if($getAll == null){
             $qb->setMaxResults(1);
         }

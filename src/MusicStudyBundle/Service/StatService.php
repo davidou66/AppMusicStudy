@@ -15,7 +15,7 @@ use MusicStudyBundle\Entity\Utilisateur;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
-class DiversService
+class StatService
 {
     /**
      * @var EntityManager

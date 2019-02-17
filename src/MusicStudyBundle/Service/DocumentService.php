@@ -11,6 +11,7 @@ namespace MusicStudyBundle\Service;
 use Doctrine\Common\Persistence\ObjectManager;
 use MusicStudyBundle\Entity\Document;
 use MusicStudyBundle\Entity\Utilisateur;
+use Doctrine\ORM\QueryBuilder;
 use MusicStudyBundle\Service\UtilisateurService;
 
 class DocumentService
@@ -20,6 +21,9 @@ class DocumentService
      */
     private $em;
 
+    /**
+     * @var UtilisateurService
+     */
     private $userService;
 
     /**
@@ -35,67 +39,52 @@ class DocumentService
     }
 
     /**
-     * TOUS LES DOCUMENTS QUI NE SONT PAS ASSOCIES
-     * @param int $index
-     * @param int $count
-     * @return array
-     */
-    public function getDocuments($index = 0, $count = 100){
-        return $this->em->getRepository('MusicStudyBundle:Document')->findBy(
-            array('utilisateur'=>null, 'displayable'=>true),
-            array('fileName' => 'ASC'),
-            $count,
-            $index
-        );
-    }
-
-    /**
      * @param $id
      * @return null|object
      */
-    public function getDocumentById($id){
+    public function getDocumentById($id)
+    {
         return $this->em->getRepository('MusicStudyBundle:Document')->find($id);
     }
 
     /**
      * DOCUMENTS POUR UN USER
-     * @param int $index
-     * @param int $count
+     *
      * @param $id
-     * @return array
+     * @param $count
+     * @param $toPaginate
+     *
+     * @return array|QueryBuilder
      */
-    public function getDocumentsByUser($index = 0, $count = 100, $id){
-        $qb = $this->em->getRepository('MusicStudyBundle:Document')->createQueryBuilder('d')
-            ->join('d.utilisateur', 'u');
-        if(!$this->userService->isAdmin()){
-            $qb->where('u.id = :idUser')
-                ->setParameter('idUser', $id);
+    public function getDocumentsByUser($id = null, $count = false, $toPaginate = false)
+    {
+        if($id === null){
+            $id = $this->userService->getConnectedUser()->getId();
         }
 
+        $qb = $this->em->getRepository('MusicStudyBundle:Document')->createQueryBuilder('d');
+        if($count) $qb->select('count(d) as nbDocs');
+        $qb->leftJoin('d.utilisateur', 'u');
+        if(!$this->userService->isAdmin()) $qb->where('u.id = :idUser')->setParameter('idUser', $id);
         $qb->andWhere('d.displayable = true')
-        ->orderBy('d.updatedAt', 'DESC');
-//            ->setMaxResults($count)
-//            ->setFirstResult($index);
+            ->orderBy('d.fileName', 'ASC')
+        ;
+
+        if($toPaginate){
+            return $qb;
+        }
 
         return $qb->getQuery()->getResult();
     }
 
     /**
-     * @param $id
      * @return array
      */
-    public function getStatsDocuments($id){
-        $docByUser = $this->em->getRepository('MusicStudyBundle:Document')->createQueryBuilder('d')
-            ->join('d.utilisateur', 'u')
-            ->where('u.id = :idUser')
-            ->setParameter('idUser', $id)
-            ->getQuery()->getResult();
+    public function getStatsDocuments()
+    {
+        $docs = $this->getDocumentsByUser(null, true, false);
 
-        $documents = $this->em->getRepository('MusicStudyBundle:Document')->findBy(
-            array('utilisateur' => null)
-        );
-
-        return array('countDocuments' => count($documents), 'countDocumentsUser' => count($docByUser));
+        return array('countDocumentsUser' => $docs[0]['nbDocs']);
     }
 
     /**
@@ -117,7 +106,8 @@ class DocumentService
     /**
      * @param Document $doc
      */
-    public function createDocument(Document $doc){
+    public function createDocument(Document $doc)
+    {
         $this->em->persist($doc);
         $this->em->flush();
     }
@@ -125,7 +115,8 @@ class DocumentService
     /**
      * @param $id
      */
-    public function deleteDocument($id){
+    public function deleteDocument($id)
+    {
         $this->em->remove($this->getDocumentById($id));
         $this->em->flush();
     }
@@ -133,7 +124,8 @@ class DocumentService
     /**
      * @param Document $doc
      */
-    public function updateDocument(Document $doc){
+    public function updateDocument(Document $doc)
+    {
         if($doc->getId() != null){
             $this->em->merge($doc);
             $this->em->flush();

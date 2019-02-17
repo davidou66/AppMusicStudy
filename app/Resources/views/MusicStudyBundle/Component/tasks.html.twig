@@ -45,7 +45,30 @@
 
             }
         });
+    }
 
+    function doneTask(idTask, input) {
+        console.log(input);
+        var isChecked = input.val();
+
+        var json = {
+            idTask: idTask,
+            done: isChecked
+        };
+
+        $.ajax({
+            method: "POST",
+            url: '{{ path("done_task") }}',
+            data: json,
+            error: function (e) {
+                console.log(e.responseText);
+            },success: function (result) {
+
+            },
+            complete: function () {
+
+            }
+        });
     }
 
 </script>
@@ -97,10 +120,8 @@
         <h3 class="box-title">To Do List</h3>
 
         <div class="box-tools pull-right">
-            <ul class="pagination pagination-sm inline">
-                {% if paginateTasks.nbResults > 0 %}
-                    {{ pagerfanta(paginateTasks, 'twitter_bootstrap') }}
-                {% endif %}
+            <ul class="pagerfanta">
+                {{ pagerfanta(paginateTasks, 'task_view') }}
             </ul>
         </div>
     </div>
@@ -116,7 +137,7 @@
                             <i class="fa fa-ellipsis-v"></i>
                         </span>
                         <!-- checkbox -->
-                        <input type="checkbox" id="task_check_{{ task.id }}"  value="{% if task.done %}checked{% endif %}">
+                        <input type="checkbox" id="task_check_{{ task.id }}"  value="{% if task.done %}checked{% endif %}" onclick="doneTask('{{ task.id }}', this)">
                         <!-- todo text -->
                         <span class="text">{{ task.content }}</span>
                         <!-- Emphasis label -->

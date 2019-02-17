@@ -6,12 +6,12 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                {% if form is not null %}Bibliothèque{% else %}Mes cours{% endif %}
-                <small>Documents{% if form is not null %} partagés{% else %} personnels{% endif %}</small>
+                Mes cours
+                <small>Documents personnels</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="{{ path('dashboard') }}"><i class="fa fa-dashboard"></i> Accueil</a></li>
-                <li class="active">Bibliothèque</li>
+                <li class="active">Mes cours</li>
             </ol>
         </section>
 
@@ -70,21 +70,18 @@
                 {% endif %}
             </div>
             <div class="row">
-                {% if documents is empty %}
-                <div class="error-page">
-                    {#<h2 class="headline text-yellow">Oops! </h2>#}
+                {% if paginateDocuments.nbResults == 0 %}
+                    <div class="error-page">
+                        <div class="error-content">
+                            <h3><i class="fa fa-warning text-yellow"></i> Aucun résultat</h3>
 
-                    <div class="error-content">
-                        <h3><i class="fa fa-warning text-yellow"></i> Aucun résultat</h3>
-
-                        <p>
-                            Aucun document ne vous a été assigné personnellement
-                            Vous pouvez vous rendre dans la <a href="{{ path('list_document') }}">BIBLIOTHEQUE </a>pour trouver des documents partagés.
-                        </p>
+                            <p>
+                                Vous ne possèdez actuellement aucun cours :(
+                            </p>
+                        </div>
                     </div>
-                </div>
                 {% else %}
-                    {% for doc in documents %}
+                    {% for doc in paginateDocuments.currentPageResults %}
                         <!-- /.col -->
                         <div class="col-md-3 col-sm-6 col-xs-12">
                             <div class="info-box">
@@ -95,17 +92,24 @@
                                         <span class="info-box-text pull-right"><a href="{{ path('delete_document', {'id': doc.id}) }}"><i class="fa fa-remove"></i></a></span>
                                     {% endif %}
                                     <span class="info-box-text">Nom: {{ doc.fileName }}</span>
-                                    <span class="info-box-text">{{ doc.description }}</span>
+                                    <span class="info-box-text">Descr: {{ doc.description }}</span>
                                     <span class="info-box-text">Type: {{ doc.type}}</span>
+                                    {% if is_granted("ROLE_ADMIN") %}
+                                        <span class="info-box-text">À: {% if doc.utilisateur %}{{ doc.utilisateur }}{% else %}Personne{% endif %}</span>
+                                    {% endif %}
                                     {#<a id="dl-link-{{ doc.id }}"  download><i class="fa fa-download fa-3" aria-hidden="true"></i></a>#}
                                     {#<a id="dl-link-{{ doc.id }}" href="{{ vich_uploader_asset(doc, 'file', 'AppBundle\\Entity\\Document') }}" download ><i class="fa fa-download fa-3" aria-hidden="true"></i></a>#}
-
                                 </div>
                                 <!-- /.info-box-content -->
                             </div>
                             <!-- /.info-box -->
                         </div>
                     {% endfor %}
+                    <div class="pull-right">
+                        <ul class="pagerfanta">
+                            {{ pagerfanta(paginateDocuments, 'task_view') }}
+                        </ul>
+                    </div>
                 {% endif %}
             </div>
         </section>
