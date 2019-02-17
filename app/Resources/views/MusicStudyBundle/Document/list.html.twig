@@ -70,6 +70,19 @@
                 {% endif %}
             </div>
             <div class="row">
+                <div class="col-md-6 pull-right">
+                    <form action="{{ path('list_document') }}" method="get" class="sidebar-form">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Recherche...">
+                            <span class="input-group-btn">
+                                <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
                 {% if paginateDocuments.nbResults == 0 %}
                     <div class="error-page">
                         <div class="error-content">
@@ -106,7 +119,7 @@
                         </div>
                     {% endfor %}
                     <div class="pull-right">
-                        <ul class="pagerfanta">
+                        <ul class="pagerfanta pagination">
                             {{ pagerfanta(paginateDocuments, 'task_view') }}
                         </ul>
                     </div>

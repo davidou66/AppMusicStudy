@@ -27,15 +27,22 @@ class DocumentService
     private $userService;
 
     /**
+     * @var SearchService
+     */
+    private $searchService;
+
+    /**
      * DocumentService constructor.
      *
      * @param ObjectManager $em
      * @param UtilisateurService $userService
+     * @param SearchService $searchService
      */
-    public function __construct(ObjectManager $em, UtilisateurService $userService)
+    public function __construct(ObjectManager $em, UtilisateurService $userService, SearchService $searchService)
     {
         $this->em = $em;
         $this->userService = $userService;
+        $this->searchService = $searchService;
     }
 
     /**
@@ -75,6 +82,27 @@ class DocumentService
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+
+    /**
+     * SEARCH FOR DOCUMENTS
+     *
+     * @param $needle
+     * @return mixed
+     */
+    public function searchDocument($needle){
+
+        $documents = $this->searchService->search($needle, new Document());
+
+
+        //Security
+        if(!$this->userService->isAdmin()){
+            $documents->andWhere('assutilisateur.id = :idUser')
+                ->setParameter(':idUser', $this->userService->getConnectedUser()->getId());
+        }
+
+        return $documents;
     }
 
     /**

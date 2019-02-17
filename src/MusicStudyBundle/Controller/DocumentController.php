@@ -60,7 +60,12 @@ class DocumentController extends Controller
     public function listAction(Request $request)
     {
         //Get Documents list
-        $documents = $this->documentService->getDocumentsByUser($id = null, $count = false, $toPaginate = true);
+        $needle = $request->get('search');
+        if($needle){
+            $documents = $this->documentService->searchDocument($needle);
+        }else{
+            $documents = $this->documentService->getDocumentsByUser($id = null, $count = false, $toPaginate = true);
+        }
         $limit = 30;
         $page = $request->get('page');
 
