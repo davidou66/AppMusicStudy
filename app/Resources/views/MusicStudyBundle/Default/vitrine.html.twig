@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <!-- Global Site Tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-74775390-2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments)};
+            gtag('js', new Date());
+
+            gtag('config', 'UA-74775390-2');
+        </script>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Cours de batterie particuliers sur Perpignan (66). Description de la philosophie des cours de batterie et de la formation par Bruno Leveque (Thrips association). L'application Music-study permet d'avoir un suivi des cours complet">
+        <meta name="keywords" content="cours, particuliers, batterie, perpignan, formation, musique">
+        <meta name="author" content="Bruno Leveque">
+        <meta name="msvalidate.01" content="5AFD9E9E1F11A25E9B9F7C6CFCB13F4E" />
+        <title>Cours de batterie sur Perpignan (66) - Thrips association - Music-study</title>
+        <!-- Bootstrap core CSS -->
+        <link href="bootstrap/css/theme.css" rel="stylesheet">
+        <!-- Custom styles for this template -->
+        <link href="style.css" rel="stylesheet">
+        <link rel="icon" href="images/favicon.ico" />
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+        <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700,100' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Raleway:300,700,900,500' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/typicons/2.0.7/typicons.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ asset('MusicStudy/dist/vitrine/css/pushy.css') }}">
+        <link rel="stylesheet" href="{{ asset('MusicStudy/dist/vitrine/css/masonry.css') }}">
+        <link rel="stylesheet" href="{{ asset('MusicStudy/dist/vitrine/css/animate.css') }}">
+        <link rel="stylesheet" href="{{ asset('MusicStudy/dist/vitrine/css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('MusicStudy/dist/vitrine/css/odometer-theme-default.css') }}">
+        <script>
+        window.odometerOptions = {
+          selector: '.odometer',
+          format: '(,ddd)', // Change how digit groups are formatted, and how many digits are shown after the decimal point
+          duration: 13000, // Change how long the javascript expects the CSS animation to take
+          theme: 'default'
+        };
+        </script>
+    </head>
+    <body class="">
+        <!-- Pushy Menu -->
+        <nav class="pushy pushy-left">
+        <ul class="list-unstyled">
+            <li><a href="#home">Accueil</a></li>
+            <li><a href="#feat">Description</a></li>
+            <li><a href="#news">Philosophie</a></li>
+            <li><a href="#photos">Photos</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        </nav>
+
+        <!-- Site Overlay -->
+        <div class="site-overlay"></div>
+        <header id="home">
+            <div class="container-fluid">
+                <!-- change the image in style.css to the class header .container-fluid [approximately row 50] -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3 col-xs-10">
+                            <a href="#" class="thumbnail logo">
+                                <img src="{{ asset('MusicStudy/dist/vitrine/img/my_logo_final_edited.png') }}" alt="logo" class="img-responsive">
+                            </a>
+                        </div>
+                        <div class="col-md-1 col-md-offset-8 col-xs-2 text-center">
+                          <div class="menu-btn"><span class="hamburger">&#9776;</span></div>
+                        </div>
+                    </div>
+                    <div class="jumbotron">
+                        <h1><small style="color: black;">Entrez dans le</small><br>
+                            <strong style="color: black;">Rythme</strong></h1>
+                        <p><br>
+                            </p>
+                        <p><a class="btn btn-primary btn-lg" role="button" href="#feat">En savoir plus</a> <a href="{{ path('dashboard') }}" class="btn btn-lg btn-danger" role="button">Connexion</a></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <section id="feat">
+            <div class="container">
+                <div class="row features">
+                    <div class="col-md-4 text-center wow fadeInUp" data-wow-delay="100ms">
+                        <span class="typcn typcn-pencil x3"></span>
+                        <h4>Mes cours</h4>
+                        <p>Cours particuliers de batterie, à domicile (20€/h) ou en studio école (15€/h).</p>
+                    </div>
+                    <div class="col-md-4 text-center wow fadeInUp" data-wow-delay="500ms">
+                        <span class="typcn typcn-bookmark x3"></span>
+                        <h4>La formation</h4>
+                        <p> Par le biais de <a href="{{ path('dashboard') }}">l'application</a> mes élèves peuvent donc revoir le
+                            contenu du dernier cours et des précédents, des corrections d’exercices et bien d'autres informations </p>
+                        <!--Mes cours ne sont pas qu’un enchaînement d’heures passées ensemble, et suite au prochain numéro,-->
+                        <!--mais belle et bien un suivi d’école.-->
+                    </div>
+                    <div class="col-md-4 text-center wow fadeInUp" data-wow-delay="300ms">
+                        <span class="typcn typcn-location x3"></span>
+                        <!--<span class="typcn typcn-map-outline x3"></span>-->
+                        <h4>Localisation</h4>
+                        <!--<h4>Situation</h4>-->
+                        <p>Studio spacieux situé sur le village d'Alenya<br>4 rue de la procession, 66200. À quelques kilomètres de perpignan</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <section id="history" class="story wow fadeInUp" data-wow-delay="300ms">
+            <!-- ----------Section  tambour---------- -->
+            <!-- change the image in style.css to the class .story .container-fluid [approximately row 141] -->
+            <div class="container-fluid">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 opaline2">
+                            <div class="row"></div>
+                        </div>
+                    </div>
+              </div>
+            </div>
+        </section>
+        <section id="news" class="blog wow fadeInUp" data-wow-delay="300ms">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-7">
+                        <h2>La passion de transmettre ou comment transmettre sa passion.</h2>
+                        <p>Apprendre c’est essayer, tâtonner en résonance avec le savoir des autres.
+
+                            L'erreur n'est pas un mal et pourtant, la culpabilité habite souvent l'apprenant qui se trompe.
+
+                            Transmettre, situé entre espoir et doute, il est le savoir apprendre de l’autre.
+
+                            Pour transmettre aux autres, il faut d'abord apprendre d'eux.</p>
+                        <p></p>
+                    </div>
+                    <div class="col-md-5">
+                        <a href="#">
+                            <img src="{{ asset('MusicStudy/dist/vitrine/img/metronome.png') }}" alt="metronome" class="img-responsive">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="photos" class="gallery wow fadeInUp" data-wow-delay="300ms">
+            <div class="container">
+                <div class="row">
+                    <div class="masonry image-gallery">
+                        <div class="grid-sizer"></div>
+                        <div class="gutter-sizer"></div>
+                        <div class="item item-width2">
+                            <img src="{{ asset('MusicStudy/dist/vitrine/img/batterie_1.jpg') }}" alt="batterie plan 1" />
+                        </div>
+                        <div class="item">
+                            <img src="{{ asset('MusicStudy/dist/vitrine/img/batterie_2.jpg') }}" alt="batterie plan 2" />
+                        </div>
+                        <div class="item">
+                            <img src="{{ asset('MusicStudy/dist/vitrine/img/batterie_3.jpg') }}" alt="batterie plan 3" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="contact" class="prefooter wow fadeInUp" data-wow-delay="300ms">
+            <!-- change the image in style.css to the class .prefooter .container-fluid [approximately row 154] -->
+            <div class="container-fluid">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h3>Contactez nous !</h3>
+
+                            <div class="row">
+                                <form id="contact-form" method="post" action="form.php">
+                                    <div class="col-md-6">
+                                        <input id="email" type="text" class="form-control" placeholder="Votre adresse mail ...">
+                                        <br>
+                                        <textarea id="message" class="form-control" placeholder="Votre message ..."></textarea>
+                                        <br>
+                                        <button type="submit" name="envoi" class="btn btn-danger">Envoyer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h3>Entrez dans le rythme</h3>
+                        <p>© 2018 THRIPS Association. Designed and Developed by <a target="_blank" href="http://www.themeinthebox.com">ThemeintheBox.com</a> & Edited by David Leveque</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-right social"><i class="typcn typcn-social-facebook-circular"></i><i class="typcn typcn-social-twitter-circular"></i></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap core JavaScript
+    ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="{{ asset('MusicStudy/dist/vitrine/js/jquery.min.js') }}"></script>
+        <script src="{{ asset('MusicStudy/dist/vitrine/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/js/bootstrap-scrollspy.js"></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="{{ asset('MusicStudy/dist/vitrine/js/ie10-viewport-bug-workaround.js') }}"></script>
+        <!--<script src="http://masonry.desandro.com/masonry.pkgd.js"></script>-->
+        <script src="{{ asset('MusicStudy/dist/vitrine/js/masonry-ext.js') }}"></script>
+        <script src="{{ asset('MusicStudy/dist/vitrine/js/masonry.js') }}"></script>
+        <script src="{{ asset('MusicStudy/dist/vitrine/js/pushy.min.js') }}"></script>
+        <script src="{{ asset('MusicStudy/dist/vitrine/js/jquery.magnific-popup.min.js') }}"></script>
+        <script src="{{ asset('MusicStudy/dist/vitrine/js/wow.min.js') }}"></script>
+        <script src="{{ asset('MusicStudy/dist/vitrine/js/scripts.js') }}"></script>
+        <script src="{{ asset('MusicStudy/dist/vitrine/js/odometer.js') }}"></script>
+    </body>
+</html>
+

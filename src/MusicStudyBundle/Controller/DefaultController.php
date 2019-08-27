@@ -47,9 +47,17 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/", name="dashboard")
+     * @Route("/", name="vitrine")
      */
     public function indexAction()
+    {
+        return $this->render('MusicStudyBundle/Default/vitrine.html.twig');
+    }
+
+    /**
+     * @Route("/dashboard", name="dashboard")
+     */
+    public function dashboardAction()
     {
         $statsDashboard = $this->statService->getStatsDashboard();
         $statsDocuments = $this->documentService->getStatsDocuments();
