@@ -6,9 +6,13 @@
 /var/cache/*
 /var/logs/*
 /var/sessions/*
+/var/
+/var/SymfonyRequirements.php
+/var/bootstrap.php.cache
 !var/cache/.gitkeep
 !var/logs/.gitkeep
 !var/sessions/.gitkeep
+
 
 # Logs
 /var/log/*
